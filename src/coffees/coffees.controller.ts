@@ -18,6 +18,7 @@ import {
 import { Response } from 'express';
 import { Coffee } from './entites/coffee.entity';
 import { CreateCoffeeDto } from './dto/create-coffee.dto';
+import { UpdateCoffeeDto } from './dto/update-coffee.dto';
 
 @Controller('coffees')
 export class CoffeesController {
