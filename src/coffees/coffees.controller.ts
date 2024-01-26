@@ -52,7 +52,8 @@ export class CoffeesController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   create(@Body() createCoffeeDto: CreateCoffeeDto) {
-    return this.coffeesService.create(createCoffeeDto);
+    this.coffeesService.create(createCoffeeDto);
+    return createCoffeeDto;
   }
 
   @Patch(':id')
