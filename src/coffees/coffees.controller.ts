@@ -5,7 +5,9 @@ import {
   Delete,
   Get,
   HttpCode,
+  HttpException,
   HttpStatus,
+  NotFoundException,
   Param,
   Patch,
   Post,
@@ -34,7 +36,15 @@ export class CoffeesController {
 
   @Get(':id')
   findOne(@Param('id') id: string): Coffee {
-    return this.coffeesService.findOne(id);
+    const coffee = this.coffeesService.findOne(id);
+    if (!coffee) {
+      // throw new HttpException(
+      //   `Coffee not found with id ${id}`,
+      //   HttpStatus.NOT_FOUND,
+      // );
+      throw new NotFoundException(`Coffee not found with id ${id}`);
+    }
+    return coffee;
   }
 
   @Post()
