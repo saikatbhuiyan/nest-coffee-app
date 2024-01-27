@@ -63,12 +63,12 @@ $ npm run test:cov
 ```bash
 # generate controller 
 $ nest g co
-$ nest generate controller --no-space [--no-space will not generate test file]
+$ nest generate controller --no-spec [--no-space will not generate test file]
 $ nest generate controller modules/abc
 $ nest generate controller modules/abc --dry-run [--dry-run will test mode]
 
 # generate dto
-$ nest g class coffees/dto/create-coffee --no-space [--no-space will not generate test file]
+$ nest g class coffees/dto/create-coffee --no-spec [--no-space will not generate test file]
 
 # e2e tests
 $ npm run test:e2e
