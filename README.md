@@ -70,6 +70,12 @@ $ nest generate controller modules/abc --dry-run [--dry-run will test mode]
 # generate dto
 $ nest g class coffees/dto/create-coffee --no-spec [--no-space will not generate test file]
 
+npx typeorm migration:create -n CoffeeRefactor
+npx typeorm migration:run
+npx typeorm migration:revert
+
+
+
 # e2e tests
 $ npm run test:e2e
 
