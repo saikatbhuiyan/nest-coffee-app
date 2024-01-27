@@ -30,8 +30,6 @@ export class CoffeesController {
     @Query() paginationQuery: PaginationQueryDto,
     @Res() response: Response,
   ) {
-    // const { limit, offset } = paginationQuery;
-
     response.status(200).send(this.coffeesService.findAll(paginationQuery));
   }
 
