@@ -37,8 +37,8 @@ export class CoffeesController {
   // }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Coffee {
-    const coffee = this.coffeesService.findOne(id);
+  async findOne(@Param('id') id: string): Promise<Coffee> {
+    const coffee = await this.coffeesService.findOne(id);
     if (!coffee) {
       // throw new HttpException(
       //   `Coffee not found with id ${id}`,
