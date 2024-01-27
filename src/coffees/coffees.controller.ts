@@ -19,16 +19,20 @@ import { Response } from 'express';
 import { Coffee } from './entites/coffee.entity';
 import { CreateCoffeeDto } from './dto/create-coffee.dto';
 import { UpdateCoffeeDto } from './dto/update-coffee.dto';
+import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 
 @Controller('coffees')
 export class CoffeesController {
   constructor(private readonly coffeesService: CoffeesService) {}
 
   @Get()
-  findAll(@Query() paginationQuery, @Res() response: Response) {
+  findAll(
+    @Query() paginationQuery: PaginationQueryDto,
+    @Res() response: Response,
+  ) {
     // const { limit, offset } = paginationQuery;
 
-    response.status(200).send(this.coffeesService.findAll());
+    response.status(200).send(this.coffeesService.findAll(paginationQuery));
   }
 
   // @Get(':id')
