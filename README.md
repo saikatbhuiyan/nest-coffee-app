@@ -2,10 +2,7 @@
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
+<p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
     <p align="center">
 <a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
 <a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
@@ -61,7 +58,7 @@ $ npm run test:cov
 ## CLI
 
 ```bash
-# generate controller 
+# generate controller
 $ nest g co
 $ nest generate controller --no-spec [--no-space will not generate test file]
 $ nest generate controller modules/abc
@@ -70,9 +67,11 @@ $ nest generate controller modules/abc --dry-run [--dry-run will test mode]
 # generate dto
 $ nest g class coffees/dto/create-coffee --no-spec [--no-space will not generate test file]
 
+npx typeorm migration:create .\src\migrations\
 npx typeorm migration:create -n CoffeeRefactor
 npx typeorm migration:run
 npx typeorm migration:revert
+typeorm migration:run -- -d path-to-datasource-config
 
 
 
@@ -82,6 +81,49 @@ $ npm run test:e2e
 # test coverage
 $ npm run test:cov
 ```
+
+Let me try explain what i did.
+
+## Postgresql
+
+First of all I did the configuration needed to make sure my Postgres Database was accepting connections from outside.
+
+open `pg_hba.conf` and add in the end the following line:
+
+```sql
+host    all             all             0.0.0.0/0               md5
+```
+
+open `postgresql.conf` and look for `listen_addresses` and modify there like this:
+
+```sql
+listen_addresses = '*'
+```
+
+Make sure the line above is not commented with a `#`
+
+-> Restart your database
+
+ ***OBS*** : This is not the recommended configuration for a production environment
+
+Next, I looked for my host’s `ip`. I was using localhosts ip `127.0.0.1`, but the container doesn’t see it, so the Connection Refused message in question shows up when running the container. After a long search in web about this, I read that the container sees the internal ip from your local network (That one your router attributes to every device that connects to it, i’m not talking about the IP that gives you access to the internet). That said, i opened a terminal and did the following:
+
+## Look for local network ip
+
+Open a terminal or CMD
+
+(MacOS/Linux)
+
+```sql
+$ ifconfig
+```
+
+(Windows)
+
+```sql
+$ ipconfig
+```
+
 
 ## Support
 
@@ -96,3 +138,6 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](LICENSE).
+
+[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
+[circleci-url]: https://circleci.com/gh/nestjs/nest
