@@ -66,6 +66,8 @@ $ nest generate controller modules/abc --dry-run [--dry-run will test mode]
 
 # generate dto
 $ nest g class coffees/dto/create-coffee --no-spec [--no-space will not generate test file]
+# generate module
+nest g mo coffee-rating
 
 npx typeorm migration:create .\src\migrations\
 npx typeorm migration:create -n CoffeeRefactor
@@ -123,7 +125,6 @@ $ ifconfig
 ```sql
 $ ipconfig
 ```
-
 
 ## Support
 
