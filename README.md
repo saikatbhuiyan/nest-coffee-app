@@ -58,6 +58,7 @@ $ npm run test:cov
 ## CLI
 
 ```bash
+nest g filter common/filters/http-exception
 # generate controller
 $ nest g co
 $ nest generate controller --no-spec [--no-space will not generate test file]
@@ -74,6 +75,7 @@ npx typeorm migration:create -n CoffeeRefactor
 npx typeorm migration:run
 npx typeorm migration:revert
 typeorm migration:run -- -d path-to-datasource-config
+nest g filter common/filters/http-exception
 
 
 
@@ -106,7 +108,7 @@ Make sure the line above is not commented with a `#`
 
 -> Restart your database
 
- ***OBS*** : This is not the recommended configuration for a production environment
+**_OBS_** : This is not the recommended configuration for a production environment
 
 Next, I looked for my host’s `ip`. I was using localhosts ip `127.0.0.1`, but the container doesn’t see it, so the Connection Refused message in question shows up when running the container. After a long search in web about this, I read that the container sees the internal ip from your local network (That one your router attributes to every device that connects to it, i’m not talking about the IP that gives you access to the internet). That said, i opened a terminal and did the following:
 
