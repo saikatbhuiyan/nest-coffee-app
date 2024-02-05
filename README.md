@@ -70,6 +70,9 @@ $ nest g class coffees/dto/create-coffee --no-spec [--no-space will not generate
 # generate module
 nest g mo coffee-rating
 
+nest g interceptor common/interceptors/wrap-response
+
+
 npx typeorm migration:create .\src\migrations\
 npx typeorm migration:create -n CoffeeRefactor
 npx typeorm migration:run
