@@ -1,3 +1,4 @@
+import { Public } from './../common/decorators/public.decorator';
 import { CoffeesService } from './coffees.service';
 import {
   Body,
@@ -5,7 +6,7 @@ import {
   Delete,
   Get,
   HttpCode,
-  HttpException,
+  // HttpException,
   HttpStatus,
   NotFoundException,
   Param,
@@ -13,6 +14,7 @@ import {
   Post,
   Query,
   Res,
+  // SetMetadata,
 } from '@nestjs/common';
 
 import { Response } from 'express';
@@ -25,6 +27,8 @@ import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 export class CoffeesController {
   constructor(private readonly coffeesService: CoffeesService) {}
 
+  // @SetMetadata('isPublic', true)
+  @Public()
   @Get()
   findAll(
     @Query() paginationQuery: PaginationQueryDto,
