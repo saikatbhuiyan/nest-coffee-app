@@ -72,6 +72,8 @@ nest g mo coffee-rating
 
 nest g interceptor common/interceptors/wrap-response
 
+nest g resource users
+
 
 npx typeorm migration:create .\src\migrations\
 npx typeorm migration:create -n CoffeeRefactor
