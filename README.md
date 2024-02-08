@@ -74,6 +74,8 @@ nest g interceptor common/interceptors/wrap-response
 
 nest g resource users
 
+nest g service iam/hashing/bcrypt --flat
+
 
 npx typeorm migration:create .\src\migrations\
 npx typeorm migration:create -n CoffeeRefactor
