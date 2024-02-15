@@ -2,7 +2,6 @@ import { SignInDto } from './dto/sign-in.dto';
 import { SignUpDto } from './dto/sign-up.dto';
 import {
   ConflictException,
-  Inject,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -12,7 +11,6 @@ import { Repository } from 'typeorm';
 import { HashingService } from '../hashing/hashing.service';
 import { PG_UNIQUE_VIOLATION_ERROR_CODE } from 'src/common/constant/keys.constant';
 import { JwtService } from '@nestjs/jwt';
-import appConfig from 'src/config/app.config';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
@@ -21,7 +19,6 @@ export class AuthenticationService {
     @InjectRepository(User) private readonly usersRepository: Repository<User>,
     private readonly hashingService: HashingService,
     private readonly jwtService: JwtService,
-    @Inject(appConfig['jwt'].KEY)
     private readonly configService: ConfigService,
   ) {}
 
@@ -70,6 +67,6 @@ export class AuthenticationService {
       },
     );
 
-    return true;
+    return { accessToken };
   }
 }

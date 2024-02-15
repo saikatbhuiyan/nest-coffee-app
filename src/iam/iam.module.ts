@@ -5,14 +5,14 @@ import { AuthenticationController } from './authentication/authentication.contro
 import { AuthenticationService } from './authentication/authentication.service';
 import { User } from 'src/users/entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { JwtModule } from '@nestjs/jwt';
+import { JwtModule, JwtService } from '@nestjs/jwt';
 import appConfig from 'src/config/app.config';
 import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
-    JwtModule.registerAsync(appConfig['jwt'].asProvider()),
+    // JwtModule.registerAsync(appConfig['jwt'].asProvider()),
     ConfigModule.forFeature(appConfig),
   ],
   providers: [
@@ -21,6 +21,7 @@ import { ConfigModule } from '@nestjs/config';
       useClass: BcryptService,
     },
     AuthenticationService,
+    JwtService,
   ],
   controllers: [AuthenticationController],
 })
