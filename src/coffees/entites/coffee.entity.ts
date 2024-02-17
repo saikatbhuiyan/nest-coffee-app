@@ -5,10 +5,11 @@ import {
   JoinTable,
   ManyToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn
 } from 'typeorm';
 import { Flavor } from './flavor.entity';
 
-@Index(['name', 'brand']) // composit index
+@Index(['name', 'brand']) // composite index
 @Entity() // sql table === 'coffee'
 export class Coffee {
   @PrimaryGeneratedColumn()
