@@ -23,6 +23,7 @@ import { CreateCoffeeDto } from './dto/create-coffee.dto';
 import { UpdateCoffeeDto } from './dto/update-coffee.dto';
 import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { ActiveUser } from 'src/iam/decorators/active-user.decorator';
 
 @ApiTags('coffees')
 @Controller('coffees')
@@ -45,7 +46,8 @@ export class CoffeesController {
   // }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<Coffee> {
+  async findOne(@Param('id') id: string, @ActiveUser() user): Promise<Coffee> {
+    console.log(user);
     const coffee = await this.coffeesService.findOne(id);
     if (!coffee) {
       // throw new HttpException(
