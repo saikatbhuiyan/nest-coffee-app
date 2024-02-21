@@ -13,6 +13,7 @@ import { PG_UNIQUE_VIOLATION_ERROR_CODE } from 'src/common/constant/keys.constan
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { ActiveUserData } from '../interface/active-user-data-interface';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
 
 @Injectable()
 export class AuthenticationService {
@@ -55,6 +56,10 @@ export class AuthenticationService {
       throw new UnauthorizedException('Password does not match');
     }
 
+    return await this.generateToken(user);
+  }
+
+  async generateToken(user: User) {
     const [accessToken, refreshToken] = await Promise.all([
       this.signToken<Partial<ActiveUserData>>(
         user.id,
@@ -73,6 +78,22 @@ export class AuthenticationService {
       accessToken,
       refreshToken,
     };
+  }
+
+  async refreshTokens(refreshTokenDto: RefreshTokenDto) {
+    try {
+      const { sub } = await this.jwtService.verifyAsync<
+        Pick<ActiveUserData, 'sub'>
+      >(refreshTokenDto.refreshToken, {
+        secret: this.configService.get('jwt.secret'),
+        audience: this.configService.get('jwt.audience'),
+        issuer: this.configService.get('jwt.issuer'),
+      });
+      const user = await this.usersRepository.findOneByOrFail({ id: sub });
+      return this.generateToken(user);
+    } catch (error) {
+      throw new UnauthorizedException(error);
+    }
   }
 
   async signToken<T>(userId: number, expiresIn: number, payload?: T) {
