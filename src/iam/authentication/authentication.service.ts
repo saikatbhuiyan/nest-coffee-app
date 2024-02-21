@@ -12,6 +12,7 @@ import { HashingService } from '../hashing/hashing.service';
 import { PG_UNIQUE_VIOLATION_ERROR_CODE } from 'src/common/constant/keys.constant';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { ActiveUserData } from '../interface/active-user-data-interface';
 
 @Injectable()
 export class AuthenticationService {
@@ -58,7 +59,7 @@ export class AuthenticationService {
       {
         sub: user.id,
         email: user.email,
-      },
+      } as ActiveUserData,
       {
         audience: this.configService.get('jwt.audience'),
         issuer: this.configService.get('jwt.issuer'),

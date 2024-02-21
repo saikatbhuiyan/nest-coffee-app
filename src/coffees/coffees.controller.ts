@@ -1,3 +1,4 @@
+import { ActiveUserData } from './../iam/interface/active-user-data-interface';
 import { Public } from './../common/decorators/public.decorator';
 import { CoffeesService } from './coffees.service';
 import {
@@ -46,7 +47,10 @@ export class CoffeesController {
   // }
 
   @Get(':id')
-  async findOne(@Param('id') id: string, @ActiveUser() user): Promise<Coffee> {
+  async findOne(
+    @Param('id') id: string,
+    @ActiveUser() user: ActiveUserData,
+  ): Promise<Coffee> {
     console.log(user);
     const coffee = await this.coffeesService.findOne(id);
     if (!coffee) {

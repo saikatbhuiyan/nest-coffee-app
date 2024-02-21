@@ -25,7 +25,7 @@ import { AuthenticationGuard } from './authentication/guards/authentication/auth
     },
     {
       provide: APP_GUARD,
-      useClass: AuthenticationGuard
+      useClass: AuthenticationGuard,
     },
     AccessTokenGuard,
     AuthenticationService,
