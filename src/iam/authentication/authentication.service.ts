@@ -55,19 +55,38 @@ export class AuthenticationService {
       throw new UnauthorizedException('Password does not match');
     }
 
-    const accessToken = await this.jwtService.signAsync(
+    const [accessToken, refreshToken] = await Promise.all([
+      this.signToken<Partial<ActiveUserData>>(
+        user.id,
+        this.configService.get('jwt.accessTokenTtl'),
+        {
+          email: user.email,
+        },
+      ),
+      this.signToken<Partial<ActiveUserData>>(
+        user.id,
+        this.configService.get('jwt.refreshTokenTtl'),
+      ),
+    ]);
+
+    return {
+      accessToken,
+      refreshToken,
+    };
+  }
+
+  async signToken<T>(userId: number, expiresIn: number, payload?: T) {
+    return await this.jwtService.signAsync(
       {
-        sub: user.id,
-        email: user.email,
-      } as ActiveUserData,
+        sub: userId,
+        ...payload,
+      },
       {
         audience: this.configService.get('jwt.audience'),
         issuer: this.configService.get('jwt.issuer'),
         secret: this.configService.get('jwt.secret'),
-        expiresIn: this.configService.get('jwt.accessTokenTtl'),
+        expiresIn,
       },
     );
-
-    return { accessToken };
   }
 }
