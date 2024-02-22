@@ -10,6 +10,11 @@ services:
       - POSTGRES_DB=coffee_bd
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=sami1234
+  redis:
+    image: redis
+    ports:
+      - '6379:6379'
+    restart: always
 
 volumes:
   postgres_data:

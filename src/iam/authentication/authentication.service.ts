@@ -12,8 +12,14 @@ import { HashingService } from '../hashing/hashing.service';
 import { PG_UNIQUE_VIOLATION_ERROR_CODE } from 'src/common/constant/keys.constant';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { ActiveUserData } from '../interface/active-user-data-interface';
+import {
+  ActiveUserData,
+  RefreshTokenPaylod,
+} from '../interface/active-user-data-interface';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
+import { RefreshTokenIdsStorage } from './refresh-token-ids.storage';
+import { randomUUID } from 'crypto';
+import { InvalidateRefreshTokenError } from 'src/errors/extend.error';
 
 @Injectable()
 export class AuthenticationService {
@@ -22,6 +28,7 @@ export class AuthenticationService {
     private readonly hashingService: HashingService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+    private readonly refreshTokenIdsStorage: RefreshTokenIdsStorage,
   ) {}
 
   async signUp(signUpDto: SignUpDto) {
@@ -60,6 +67,7 @@ export class AuthenticationService {
   }
 
   async generateToken(user: User) {
+    const refreshTokenId = randomUUID();
     const [accessToken, refreshToken] = await Promise.all([
       this.signToken<Partial<ActiveUserData>>(
         user.id,
@@ -68,12 +76,13 @@ export class AuthenticationService {
           email: user.email,
         },
       ),
-      this.signToken<Partial<ActiveUserData>>(
+      this.signToken<Partial<RefreshTokenPaylod>>(
         user.id,
         this.configService.get('jwt.refreshTokenTtl'),
+        { refreshTokenId },
       ),
     ]);
-
+    await this.refreshTokenIdsStorage.insert(user.id, refreshTokenId);
     return {
       accessToken,
       refreshToken,
@@ -82,16 +91,28 @@ export class AuthenticationService {
 
   async refreshTokens(refreshTokenDto: RefreshTokenDto) {
     try {
-      const { sub } = await this.jwtService.verifyAsync<
-        Pick<ActiveUserData, 'sub'>
+      const { sub, refreshTokenId } = await this.jwtService.verifyAsync<
+        Pick<RefreshTokenPaylod, 'sub'> & { refreshTokenId: string }
       >(refreshTokenDto.refreshToken, {
         secret: this.configService.get('jwt.secret'),
         audience: this.configService.get('jwt.audience'),
         issuer: this.configService.get('jwt.issuer'),
       });
       const user = await this.usersRepository.findOneByOrFail({ id: sub });
+      const isValid = await this.refreshTokenIdsStorage.validate(
+        user.id,
+        refreshTokenId,
+      );
+      if (!isValid) {
+        throw new Error('Refresh token is invalid');
+      }
+      await this.refreshTokenIdsStorage.invalidate(user.id);
       return this.generateToken(user);
     } catch (error) {
+      if (error instanceof InvalidateRefreshTokenError) {
+        // Take action: notify user that the refresh token might have been stolen?
+        throw new UnauthorizedException('Access denied');
+      }
       throw new UnauthorizedException(error);
     }
   }
