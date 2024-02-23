@@ -25,6 +25,8 @@ import { UpdateCoffeeDto } from './dto/update-coffee.dto';
 import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { ActiveUser } from 'src/iam/decorators/active-user.decorator';
+import { Roles } from 'src/iam/authorization/decorators/roles.decorator';
+import { Role } from 'src/users/enums/role.enum';
 
 @ApiTags('coffees')
 @Controller('coffees')
@@ -63,6 +65,7 @@ export class CoffeesController {
     return coffee;
   }
 
+  @Roles(Role.Admin)
   @Post()
   @HttpCode(HttpStatus.CREATED)
   create(@Body() createCoffeeDto: CreateCoffeeDto) {
@@ -70,11 +73,13 @@ export class CoffeesController {
     return createCoffeeDto;
   }
 
+  @Roles(Role.Admin)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateCoffeeDto: UpdateCoffeeDto) {
     return this.coffeesService.update(id, updateCoffeeDto);
   }
 
+  @Roles(Role.Admin)
   @Delete(':id')
   delete(@Param('id') id: string) {
     return this.coffeesService.remove(id);

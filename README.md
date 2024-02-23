@@ -58,6 +58,7 @@ $ npm run test:cov
 ## CLI
 
 ```bash
+
 nest g filter common/filters/http-exception
 # generate controller
 $ nest g co
@@ -84,7 +85,7 @@ npx typeorm migration:revert
 typeorm migration:run -- -d path-to-datasource-config
 nest g filter common/filters/http-exception
 
-
+nest g guard iam/authorization/guards/roles
 
 # e2e tests
 $ npm run test:e2e
