@@ -1,4 +1,4 @@
-import { ActiveUserData } from './../iam/interface/active-user-data-interface';
+// import { ActiveUserData } from './../iam/interface/active-user-data-interface';
 import { Public } from './../common/decorators/public.decorator';
 import { CoffeesService } from './coffees.service';
 import {
@@ -27,6 +27,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { ActiveUser } from 'src/iam/decorators/active-user.decorator';
 import { Roles } from 'src/iam/authorization/decorators/roles.decorator';
 import { Role } from 'src/users/enums/role.enum';
+import { ActiveUserData } from 'src/iam/interface/active-user-data-interface';
 
 @ApiTags('coffees')
 @Controller('coffees')
@@ -36,16 +37,20 @@ export class CoffeesController {
   // @SetMetadata('isPublic', true)
   @Public()
   @Get()
-  findAll(
+  async findAll(
     @Query() paginationQuery: PaginationQueryDto,
     @Res() response: Response,
   ) {
-    response.status(200).send(this.coffeesService.findAll(paginationQuery));
+    response
+      .status(200)
+      .send(await this.coffeesService.findAll(paginationQuery));
   }
 
   // @Get(':id')
-  // findOne(@Param() params): string {
-  //     return 'This action returns a single coffees with id ' + params.id
+  // findOne(@Param('id') id: string): Promise<Coffee> {
+  //   console.log('params', id);
+
+  //   return this.coffeesService.findOne(id);
   // }
 
   @Get(':id')

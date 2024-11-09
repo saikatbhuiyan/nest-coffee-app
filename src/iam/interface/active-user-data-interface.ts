@@ -18,7 +18,7 @@ export interface ActiveUserData {
   role: Role;
 }
 
-export interface RefreshTokenPaylod {
+export interface RefreshTokenPayload {
   /**
    * The "subject" of the token. The value of this property is the user ID
    * that granted this token.

@@ -2,14 +2,17 @@ version: '3.9'
 
 services:
   db:
-    image: postgres:14-alpine
-    restart: always
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_DB=coffee_bd
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=sami1234
+      container_name: db
+      image: postgres:14-alpine
+      ports:
+        - 5432:5432
+      volumes:
+        - postgres_data:/var/lib/postgresql/data
+      environment:
+        - POSTGRES_DB=coffee_bd
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=sami1234
+
   redis:
     image: redis
     ports:

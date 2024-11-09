@@ -14,7 +14,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import {
   ActiveUserData,
-  RefreshTokenPaylod,
+  RefreshTokenPayload,
 } from '../interface/active-user-data-interface';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { RefreshTokenIdsStorage } from './refresh-token-ids.storage';
@@ -24,7 +24,8 @@ import { InvalidateRefreshTokenError } from 'src/errors/extend.error';
 @Injectable()
 export class AuthenticationService {
   constructor(
-    @InjectRepository(User) private readonly usersRepository: Repository<User>,
+    @InjectRepository(User)
+    private readonly usersRepository: Repository<User>,
     private readonly hashingService: HashingService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
@@ -33,11 +34,19 @@ export class AuthenticationService {
 
   async signUp(signUpDto: SignUpDto) {
     try {
-      const user = new User();
-      user.email = signUpDto.email;
-      user.password = await this.hashingService.hash(signUpDto.password);
+      const { email, password } = signUpDto;
+      const existingUser = await this.usersRepository.findOne({
+        where: { email },
+      });
 
-      await this.usersRepository.save(user);
+      if (existingUser) {
+        throw new ConflictException();
+      }
+      const user = new User();
+      user.email = email;
+      user.password = await this.hashingService.hash(password);
+
+      return await this.usersRepository.save(user);
     } catch (error) {
       const pgUniqueViolationErrorCode = PG_UNIQUE_VIOLATION_ERROR_CODE;
       if (error.code === pgUniqueViolationErrorCode) {
@@ -56,11 +65,11 @@ export class AuthenticationService {
     }
 
     const isEqual = await this.hashingService.compare(
-      user.email,
-      signInDto.email,
+      signInDto.password,
+      user.password,
     );
     if (!isEqual) {
-      throw new UnauthorizedException('Password does not match');
+      throw new UnauthorizedException('Credentials not valid!');
     }
 
     return await this.generateToken(user);
@@ -76,7 +85,7 @@ export class AuthenticationService {
           email: user.email,
         },
       ),
-      this.signToken<Partial<RefreshTokenPaylod>>(
+      this.signToken<Partial<RefreshTokenPayload>>(
         user.id,
         this.configService.get('jwt.refreshTokenTtl'),
         { refreshTokenId },
@@ -92,12 +101,13 @@ export class AuthenticationService {
   async refreshTokens(refreshTokenDto: RefreshTokenDto) {
     try {
       const { sub, refreshTokenId } = await this.jwtService.verifyAsync<
-        Pick<RefreshTokenPaylod, 'sub'> & { refreshTokenId: string }
+        Pick<RefreshTokenPayload, 'sub'> & { refreshTokenId: string }
       >(refreshTokenDto.refreshToken, {
         secret: this.configService.get('jwt.secret'),
-        audience: this.configService.get('jwt.audience'),
-        issuer: this.configService.get('jwt.issuer'),
+        audience: this.configService.get('jwt.tokenAudience'),
+        issuer: this.configService.get('jwt.tokenIssuer'),
       });
+
       const user = await this.usersRepository.findOneByOrFail({ id: sub });
       const isValid = await this.refreshTokenIdsStorage.validate(
         user.id,
@@ -124,8 +134,8 @@ export class AuthenticationService {
         ...payload,
       },
       {
-        audience: this.configService.get('jwt.audience'),
-        issuer: this.configService.get('jwt.issuer'),
+        audience: this.configService.get('jwt.tokenAudience'),
+        issuer: this.configService.get('jwt.tokenIssuer'),
         secret: this.configService.get('jwt.secret'),
         expiresIn,
       },

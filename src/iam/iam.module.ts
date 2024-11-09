@@ -34,9 +34,10 @@ import { RolesGuard } from './authorization/guards/roles/roles.guard';
       useClass: RolesGuard,
     },
     AccessTokenGuard,
+    RefreshTokenIdsStorage,
     AuthenticationService,
     JwtService,
   ],
-  controllers: [AuthenticationController, RefreshTokenIdsStorage],
+  controllers: [AuthenticationController],
 })
 export class IamModule {}

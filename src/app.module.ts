@@ -13,12 +13,17 @@ import appConfig from './config/app.config';
 
 @Module({
   imports: [
-    // ConfigModule.forRoot({
-    //   validationSchema: Joi.object({
-    //     DATABASE_HOST: Joi.required(),
-    //     DATABASE_PORT: Joi.number().default(5432),
-    //   }),
-    // }),
+    ConfigModule.forRoot({
+      validationSchema: Joi.object({
+        DATABASE_HOST: Joi.required(),
+        DATABASE_PORT: Joi.number().default(5432),
+      }),
+    }),
+    ConfigModule.forRoot({
+      validationSchema: Joi.object({
+        load: [appConfig],
+      }),
+    }),
     TypeOrmModule.forRootAsync({
       useFactory: () => ({
         type: 'postgres',
@@ -29,11 +34,7 @@ import appConfig from './config/app.config';
         database: process.env.DATABASE_NAME,
         autoLoadEntities: true,
         synchronize: true,
-      }),
-    }),
-    ConfigModule.forRoot({
-      validationSchema: Joi.object({
-        load: [appConfig],
+        logging: true,
       }),
     }),
     CoffeesModule,

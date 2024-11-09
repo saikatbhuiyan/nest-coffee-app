@@ -21,14 +21,13 @@ export class CoffeesService {
   ) {
     // const databaseHost = this.configService.get<string>('DATABASE_HOST');
     // console.log(databaseHost);
-    const databaseHost = this.configService.get('database.host', 'localhost');
-    console.log(databaseHost);
+    // const databaseHost = this.configService.get('database.host', 'localhost');
   }
 
-  findAll(paginationQuery: PaginationQueryDto) {
+  async findAll(paginationQuery: PaginationQueryDto) {
     const { limit, offset } = paginationQuery;
 
-    return this.coffeeRepository.find({
+    return await this.coffeeRepository.find({
       relations: ['flavors'],
       skip: offset,
       take: limit,
@@ -41,10 +40,6 @@ export class CoffeesService {
       relations: ['flavors'],
     });
     if (!coffee) {
-      // throw new HttpException(
-      //   `Coffee not found with id ${id}`,
-      //   HttpStatus.NOT_FOUND,
-      // );
       throw new NotFoundException(`Coffee not found with id ${id}`);
     }
     return coffee;
