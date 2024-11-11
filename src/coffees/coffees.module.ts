@@ -7,22 +7,22 @@ import { Flavor } from './entites/flavor.entity';
 import { Event } from '../events/entities/event.entity';
 import { ConfigModule } from '@nestjs/config';
 
-class ConfigService {}
-class DevelopmentConfigService {}
-class ProductionConfigService {}
+// class ConfigService {}
+// class DevelopmentConfigService {}
+// class ProductionConfigService {}
 
 @Module({
   imports: [TypeOrmModule.forFeature([Coffee, Flavor, Event]), ConfigModule],
   controllers: [CoffeesController],
   providers: [
     CoffeesService,
-    {
-      provide: ConfigService,
-      useClass:
-        process.env.NODE_ENV === 'development'
-          ? DevelopmentConfigService
-          : ProductionConfigService,
-    },
+    // {
+    //   provide: ConfigService,
+    //   useClass:
+    //     process.env.NODE_ENV === 'development'
+    //       ? DevelopmentConfigService
+    //       : ProductionConfigService,
+    // },
   ],
   exports: [CoffeesService],
 })

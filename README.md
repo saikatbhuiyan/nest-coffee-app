@@ -58,7 +58,6 @@ $ npm run test:cov
 ## CLI
 
 ```bash
-
 nest g filter common/filters/http-exception
 # generate controller
 $ nest g co
@@ -92,7 +91,12 @@ $ npm run test:e2e
 
 # test coverage
 $ npm run test:cov
+
+npm run test:watch -- coffees.service
+
 ```
+
+
 
 Let me try explain what i did.
 
