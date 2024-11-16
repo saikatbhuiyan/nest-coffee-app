@@ -22,12 +22,12 @@ import { Response } from 'express';
 import { Coffee } from './entites/coffee.entity';
 import { CreateCoffeeDto } from './dto/create-coffee.dto';
 import { UpdateCoffeeDto } from './dto/update-coffee.dto';
-import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 import { ApiTags } from '@nestjs/swagger';
-import { ActiveUser } from 'src/iam/decorators/active-user.decorator';
-import { Roles } from 'src/iam/authorization/decorators/roles.decorator';
-import { Role } from 'src/users/enums/role.enum';
-import { ActiveUserData } from 'src/iam/interface/active-user-data-interface';
+import { ActiveUser } from '../iam/decorators/active-user.decorator';
+import { Roles } from '../iam/authorization/decorators/roles.decorator';
+import { Role } from '../users/enums/role.enum';
+import { ActiveUserData } from '../iam/interface/active-user-data-interface';
+import { PaginationQueryDto } from '../common/dto/pagination-query.dto';
 
 @ApiTags('coffees')
 @Controller('coffees')

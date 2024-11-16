@@ -7,15 +7,15 @@ import { LoggingMiddleware } from './middleware/logging/logging.middleware';
 @Module({
   imports: [ConfigModule],
   providers: [
-    {
-      provide: APP_GUARD,
-      useClass: ApiKeyGuard,
-    },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: ApiKeyGuard,
+    // },
   ],
 })
 export class CommonModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     // consumer.apply(LoggingMiddleware).forRoutes('*');
-    consumer.apply(LoggingMiddleware).exclude('/authentication').forRoutes('*');
+    // consumer.apply(LoggingMiddleware).exclude('/authentication').forRoutes('*');
   }
 }

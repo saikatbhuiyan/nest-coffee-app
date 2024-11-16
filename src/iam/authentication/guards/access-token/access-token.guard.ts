@@ -7,7 +7,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
-import { REQUEST_USER_KEY } from 'src/iam/iam.constants';
+import { REQUEST_USER_KEY } from '../../../../iam/iam.constants';
 
 @Injectable()
 export class AccessTokenGuard implements CanActivate {
@@ -20,10 +20,14 @@ export class AccessTokenGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
     console.log('token', token);
-    console.log('request.headers.authorization', request.headers);
+    console.log(
+      'request.headers.authorization AccessTokenGuard',
+      request.headers,
+    );
     console.log(
       'request.headers.authorization',
       this.configService.get('jwt.secret'),
+      token,
       'should match the secret',
     );
 
