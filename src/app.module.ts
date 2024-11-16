@@ -9,6 +9,8 @@ import { ConfigModule } from '@nestjs/config';
 import { CommonModule } from './common/common.module';
 import { UsersModule } from './users/users.module';
 import { IamModule } from './iam/iam.module';
+import { SchedulerModule } from './scheduler/scheduler.module';
+import { CronModule } from './cron/cron.module';
 import appConfig from './config/app.config';
 
 @Module({
@@ -42,6 +44,8 @@ import appConfig from './config/app.config';
     CommonModule,
     UsersModule,
     IamModule,
+    SchedulerModule,
+    CronModule,
   ],
   controllers: [AppController],
   providers: [AppService],
