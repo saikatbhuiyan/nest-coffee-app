@@ -32,6 +32,8 @@ $ npm install
 ## Running the app
 
 ```bash
+
+
 # development
 $ npm run start
 
@@ -40,6 +42,14 @@ $ npm run start:dev
 
 # production mode
 $ npm run start:prod
+
+#debug mode
+$ NEST_DEBUG=tue npm run start:dev
+
+# check for circular dependency
+npx madage dist/main.js --circular
+npx madage dist/main.js --image graph.png
+
 ```
 
 ## Test
@@ -96,6 +106,11 @@ npm run test:watch -- coffees.service
 
 ```
 
+## Lazy loading module
+
+nest g mo rewards --skip-import
+
+nest g s rewards
 
 
 Let me try explain what i did.

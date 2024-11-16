@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CoffeesController } from './coffees.controller';
-import { CoffeesService } from './coffees.service';
+import { COFFEES_DATA_SOURCE, CoffeesService } from './coffees.service';
 import { Coffee } from './entites/coffee.entity';
 import { Flavor } from './entites/flavor.entity';
 import { Event } from '../events/entities/event.entity';
@@ -16,6 +16,7 @@ import { ConfigModule } from '@nestjs/config';
   controllers: [CoffeesController],
   providers: [
     CoffeesService,
+    { provide: COFFEES_DATA_SOURCE, useValue: [] },
     // {
     //   provide: ConfigService,
     //   useClass:
