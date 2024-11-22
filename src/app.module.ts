@@ -11,6 +11,7 @@ import { UsersModule } from './users/users.module';
 import { IamModule } from './iam/iam.module';
 import { SchedulerModule } from './scheduler/scheduler.module';
 import { CronModule } from './cron/cron.module';
+import { FibonacciModule } from './fibonacci/fibonacci.module';
 import appConfig from './config/app.config';
 
 @Module({
@@ -46,6 +47,7 @@ import appConfig from './config/app.config';
     IamModule,
     SchedulerModule,
     CronModule,
+    FibonacciModule,
   ],
   controllers: [AppController],
   providers: [AppService],
