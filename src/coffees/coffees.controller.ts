@@ -1,3 +1,4 @@
+import { CircuitBreakerInterceptor } from './../common/interceptors/circuit-breaker/circuit-breaker.interceptor';
 // import { ActiveUserData } from './../iam/interface/active-user-data-interface';
 import { Public } from './../common/decorators/public.decorator';
 import { CoffeesService } from './coffees.service';
@@ -14,7 +15,9 @@ import {
   Patch,
   Post,
   Query,
+  RequestTimeoutException,
   Res,
+  UseInterceptors,
   // SetMetadata,
 } from '@nestjs/common';
 
@@ -29,6 +32,7 @@ import { Role } from '../users/enums/role.enum';
 import { ActiveUserData } from '../iam/interface/active-user-data-interface';
 import { PaginationQueryDto } from '../common/dto/pagination-query.dto';
 
+@UseInterceptors(CircuitBreakerInterceptor)
 @ApiTags('coffees')
 @Controller('coffees')
 export class CoffeesController {
@@ -41,6 +45,8 @@ export class CoffeesController {
     @Query() paginationQuery: PaginationQueryDto,
     @Res() response: Response,
   ) {
+    console.log('findAll expects without paginationQuery');
+    throw new RequestTimeoutException('Test circuit breaker');
     response
       .status(200)
       .send(await this.coffeesService.findAll(paginationQuery));

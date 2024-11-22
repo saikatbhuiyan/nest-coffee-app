@@ -112,7 +112,6 @@ nest g mo rewards --skip-import
 
 nest g s rewards
 
-
 Let me try explain what i did.
 
 ## Postgresql
