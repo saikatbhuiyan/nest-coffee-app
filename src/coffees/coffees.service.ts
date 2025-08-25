@@ -48,11 +48,18 @@ export class CoffeesService {
   }
 
   async findOne(id: string) {
+    // Lazy loading the RewardsModule and RewardsService
+    // Cashing the module reference for performance
+    console.time();
+
     const rewardsModuleRef = await this.lazyModuleLoader.load(() =>
       import('../rewards/rewards.module').then((m) => m.RewardsModule),
     );
     const { RewardsService } = await import('../rewards/rewards.service');
     const rewardsService = rewardsModuleRef.get(RewardsService);
+
+    console.timeEnd();
+
     rewardsService.giveReward();
 
     const coffee = await this.coffeeRepository.findOne({
