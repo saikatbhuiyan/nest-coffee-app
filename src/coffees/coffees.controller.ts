@@ -31,6 +31,7 @@ import { Roles } from '../iam/authorization/decorators/roles.decorator';
 import { Role } from '../users/enums/role.enum';
 import { ActiveUserData } from '../iam/interface/active-user-data-interface';
 import { PaginationQueryDto } from '../common/dto/pagination-query.dto';
+import { EntityExistsPipe } from 'src/common/pipes/entity-exists/entity-exists.pipe';
 
 @UseInterceptors(CircuitBreakerInterceptor)
 @ApiTags('coffees')
@@ -86,13 +87,16 @@ export class CoffeesController {
 
   @Roles(Role.Admin)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCoffeeDto: UpdateCoffeeDto) {
+  update(
+    @Param('id', EntityExistsPipe(Coffee)) id: string,
+    @Body() updateCoffeeDto: UpdateCoffeeDto,
+  ) {
     return this.coffeesService.update(id, updateCoffeeDto);
   }
 
   @Roles(Role.Admin)
   @Delete(':id')
-  delete(@Param('id') id: string) {
+  delete(@Param('id', EntityExistsPipe(Coffee)) id: string) {
     return this.coffeesService.remove(id);
   }
 }

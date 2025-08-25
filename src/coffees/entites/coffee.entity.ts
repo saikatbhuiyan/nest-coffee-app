@@ -5,7 +5,6 @@ import {
   JoinTable,
   ManyToMany,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
 } from 'typeorm';
 import { Flavor } from './flavor.entity';
 
