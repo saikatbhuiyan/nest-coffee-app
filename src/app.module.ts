@@ -15,6 +15,7 @@ import { CronModule } from './cron/cron.module';
 import { FibonacciModule } from './fibonacci/fibonacci.module';
 import appConfig from './config/app.config';
 import { AppConfig } from './config/config.types';
+import { HttpClientModule } from './http-client/http-client.module';
 
 @Module({
   imports: [
@@ -87,6 +88,13 @@ import { AppConfig } from './config/config.types';
     SchedulerModule,
     CronModule,
     FibonacciModule,
+    HttpClientModule.register({ baseUrl: 'http://nestjs.com' }),
+    HttpClientModule.register({ baseUrl: 'http://nestjs.com' }),
+    HttpClientModule.register({ baseUrl: 'http://nestjs.com' }),
+    // Alternatively:
+    // HttpClientModule. registerAsync({
+    // useFactory: () = ({ baseUrl: 'http://nestjs.com' }),
+    // 7),
   ],
   controllers: [AppController],
   providers: [AppService],
