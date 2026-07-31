@@ -16,8 +16,19 @@ export class RefreshTokenIdsStorage
   onApplicationBootstrap() {
     // TODO: Ideally, we should move this to the dedicated "RedisModule" instead of initiating the connection here.
     this.redisClient = new Redis({
-      host: 'localhost',
-      port: 6379,
+      host: process.env.REDIS_HOST || 'localhost',
+      port: parseInt(process.env.REDIS_PORT, 10) || 6379,
+      retryStrategy(times) {
+        if (times > 5) return null;
+        return Math.min(times * 200, 2000);
+      },
+      maxRetriesPerRequest: null,
+      lazyConnect: true,
+      enableOfflineQueue: false,
+    });
+
+    this.redisClient.on('error', (err) => {
+      console.error('Redis connection error:', err.message);
     });
   }
 

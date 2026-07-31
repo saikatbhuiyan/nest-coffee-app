@@ -1,7 +1,10 @@
 import { EntityExistsPipe } from './entity-exists.pipe';
 
+class MockEntity {}
+
 describe('EntityExistsPipe', () => {
   it('should be defined', () => {
-    expect(new EntityExistsPipe()).toBeDefined();
+    const PipeClass = EntityExistsPipe(MockEntity);
+    expect(PipeClass).toBeDefined();
   });
 });
