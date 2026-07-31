@@ -1,0 +1,1 @@
+export declare const PG_UNIQUE_VIOLATION_ERROR_CODE = "23505";
