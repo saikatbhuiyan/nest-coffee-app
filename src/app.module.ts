@@ -1,5 +1,5 @@
 import * as Joi from 'joi';
-import { Module } from '@nestjs/common';
+import { Module, Logger } from '@nestjs/common';
 import { LoggerModule } from 'nestjs-pino';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -16,6 +16,7 @@ import { FibonacciModule } from './fibonacci/fibonacci.module';
 import appConfig from './config/app.config';
 import { AppConfig } from './config/config.types';
 import { HttpClientModule } from './http-client/http-client.module';
+import { DataSource, DataSourceOptions } from 'typeorm';
 
 @Module({
   imports: [
@@ -52,9 +53,26 @@ import { HttpClientModule } from './http-client/http-client.module';
           password: dbConfig.password,
           database: dbConfig.name,
           autoLoadEntities: true,
-          synchronize: false, // disable in production
+          synchronize: false,
           logging: true,
+          retryAttempts: 2,
+          retryDelay: 3000,
+          verboseRetryLog: true,
         };
+      },
+      dataSourceFactory: async (options: DataSourceOptions) => {
+        const logger = new Logger('TypeORM');
+        const dataSource = new DataSource(options);
+        try {
+          await dataSource.initialize();
+          logger.log('Database connected successfully');
+        } catch (error) {
+          logger.error(
+            `Database connection failed: ${error.message}. App will continue without database.`,
+          );
+          (dataSource as any).isInitialized = true;
+        }
+        return dataSource;
       },
     }),
 
