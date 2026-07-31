@@ -1,4 +1,4 @@
-import { DynamicModule, Inject, Module } from '@nestjs/common';
+import { DynamicModule, Inject, Logger, Module } from '@nestjs/common';
 import {
   ASYNC_OPTIONS_TYPE,
   ConfigurableModuleClass,
@@ -8,9 +8,11 @@ import {
 
 @Module({})
 export class HttpClientModule extends ConfigurableModuleClass {
+  private readonly logger = new Logger(HttpClientModule.name);
+
   constructor(@Inject(HTTP_MODULE_OPTIONS) private options) {
-    console.log(options);
     super();
+    this.logger.debug(`HttpClient options: ${JSON.stringify(options)}`);
   }
 
   static register(options: typeof OPTIONS_TYPE): DynamicModule {

@@ -1,5 +1,4 @@
 import { CircuitBreakerInterceptor } from './../common/interceptors/circuit-breaker/circuit-breaker.interceptor';
-// import { ActiveUserData } from './../iam/interface/active-user-data-interface';
 import { Public } from './../common/decorators/public.decorator';
 import { CoffeesService } from './coffees.service';
 import {
@@ -8,8 +7,8 @@ import {
   Delete,
   Get,
   HttpCode,
-  // HttpException,
   HttpStatus,
+  Logger,
   NotFoundException,
   Param,
   Patch,
@@ -18,7 +17,6 @@ import {
   RequestTimeoutException,
   Res,
   UseInterceptors,
-  // SetMetadata,
 } from '@nestjs/common';
 
 import { Response } from 'express';
@@ -37,6 +35,8 @@ import { EntityExistsPipe } from 'src/common/pipes/entity-exists/entity-exists.p
 @ApiTags('coffees')
 @Controller('coffees')
 export class CoffeesController {
+  private readonly logger = new Logger(CoffeesController.name);
+
   constructor(private readonly coffeesService: CoffeesService) {}
 
   // @SetMetadata('isPublic', true)
@@ -46,7 +46,7 @@ export class CoffeesController {
     @Query() paginationQuery: PaginationQueryDto,
     @Res() response: Response,
   ) {
-    console.log('findAll expects without paginationQuery');
+    this.logger.debug('findAll called');
     throw new RequestTimeoutException('Test circuit breaker');
     response
       .status(200)
@@ -65,7 +65,7 @@ export class CoffeesController {
     @Param('id') id: string,
     @ActiveUser() user: ActiveUserData,
   ): Promise<Coffee> {
-    console.log(user);
+    this.logger.debug(`findOne user: ${JSON.stringify(user)}`);
     const coffee = await this.coffeesService.findOne(id);
     if (!coffee) {
       // throw new HttpException(

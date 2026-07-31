@@ -1,4 +1,4 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { Coffee } from './entites/coffee.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
@@ -19,6 +19,8 @@ export interface CoffeeDataSource {
 
 @Injectable()
 export class CoffeesService {
+  private readonly logger = new Logger(CoffeesService.name);
+
   constructor(
     @InjectRepository(Coffee)
     private readonly coffeeRepository: Repository<Coffee>,
@@ -32,9 +34,6 @@ export class CoffeesService {
     private readonly coffeeDataSource: CoffeeDataSource,
     private readonly lazyModuleLoader: LazyModuleLoader,
   ) {
-    // const databaseHost = this.configService.get<string>('DATABASE_HOST');
-    // console.log(databaseHost);
-    // const databaseHost = this.configService.get('database.host', 'localhost');
   }
 
   async findAll(paginationQuery: PaginationQueryDto) {
@@ -49,8 +48,8 @@ export class CoffeesService {
 
   async findOne(id: string) {
     // Lazy loading the RewardsModule and RewardsService
-    // Cashing the module reference for performance
-    console.time();
+    // Caching the module reference for performance
+    const loadStart = Date.now();
 
     const rewardsModuleRef = await this.lazyModuleLoader.load(() =>
       import('../rewards/rewards.module').then((m) => m.RewardsModule),
@@ -58,7 +57,7 @@ export class CoffeesService {
     const { RewardsService } = await import('../rewards/rewards.service');
     const rewardsService = rewardsModuleRef.get(RewardsService);
 
-    console.timeEnd();
+    this.logger.debug(`RewardsModule lazy loaded in ${Date.now() - loadStart}ms`);
 
     rewardsService.giveReward();
 

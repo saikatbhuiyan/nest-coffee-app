@@ -2,18 +2,18 @@ import {
   CallHandler,
   ExecutionContext,
   Injectable,
+  Logger,
   NestInterceptor,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { tap, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class WrapResponseInterceptor implements NestInterceptor {
-  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    console.log('Before...');
+  private readonly logger = new Logger(WrapResponseInterceptor.name);
 
-    // return next.handle().pipe(tap((data) => console.log('After...', data)));
+  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+    this.logger.debug('WrapResponseInterceptor: before...');
     return next.handle().pipe(map((data) => ({ data })));
   }
 }

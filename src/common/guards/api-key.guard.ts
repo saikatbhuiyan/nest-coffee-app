@@ -1,4 +1,4 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable, Logger } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
 import { Observable } from 'rxjs';
@@ -7,6 +7,8 @@ import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class ApiKeyGuard implements CanActivate {
+  private readonly logger = new Logger(ApiKeyGuard.name);
+
   constructor(
     private readonly reflector: Reflector,
     private readonly configService: ConfigService,
@@ -21,7 +23,7 @@ export class ApiKeyGuard implements CanActivate {
     }
 
     const request = context.switchToHttp().getRequest<Request>();
-    console.log('request.headers.authorization ApiKeyGuard', request.headers);
+    this.logger.debug(`Auth headers: ${JSON.stringify(request.headers)}`);
     const authHeader = request.header('Authorization');
     return authHeader === this.configService.get('API_KEY');
   }

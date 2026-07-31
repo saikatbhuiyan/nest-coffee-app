@@ -44,7 +44,6 @@ import { HttpClientModule } from './http-client/http-client.module';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
         const dbConfig = configService.get<AppConfig['database']>('database');
-        console.log(dbConfig);
         return {
           type: 'postgres',
           host: dbConfig.host,

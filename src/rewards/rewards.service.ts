@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 
 @Injectable()
 export class RewardsService {
+  private readonly logger = new Logger(RewardsService.name);
+
   giveReward() {
-    // Logic to give rewards to the user based on the rewardType
-    console.log(`Lazy loading has received a reward.`);
+    this.logger.debug(`Lazy loading has received a reward.`);
   }
 }

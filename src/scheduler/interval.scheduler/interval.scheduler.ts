@@ -1,5 +1,6 @@
 import {
   Injectable,
+  Logger,
   OnApplicationBootstrap,
   OnApplicationShutdown,
 } from '@nestjs/common';
@@ -11,6 +12,7 @@ import { INTERVAL_KEY } from '../decorators/interval.decorator';
 export class IntervalScheduler
   implements OnApplicationBootstrap, OnApplicationShutdown
 {
+  private readonly logger = new Logger(IntervalScheduler.name);
   private intervals: NodeJS.Timer[] = [];
 
   constructor(
@@ -32,7 +34,7 @@ export class IntervalScheduler
       if (!isIntervalHost) {
         return;
       }
-      console.log(wrapper.token);
+      this.logger.debug(`Interval host: ${String(wrapper.token)}`);
       const methodKeys = this.metadataScanner.getAllMethodNames(prototype);
       methodKeys.forEach((methodKey) => {
         const interval = this.reflector.get(INTERVAL_KEY, instance[methodKey]);

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Injectable,
+  Logger,
   OnApplicationBootstrap,
   OnApplicationShutdown,
 } from '@nestjs/common';
@@ -11,6 +12,7 @@ import { InvalidateRefreshTokenError } from '../../errors/extend.error';
 export class RefreshTokenIdsStorage
   implements OnApplicationBootstrap, OnApplicationShutdown
 {
+  private readonly logger = new Logger(RefreshTokenIdsStorage.name);
   private redisClient: Redis;
 
   onApplicationBootstrap() {
@@ -28,7 +30,7 @@ export class RefreshTokenIdsStorage
     });
 
     this.redisClient.on('error', (err) => {
-      console.error('Redis connection error:', err.message);
+      this.logger.error(`Redis connection error: ${err.message}`);
     });
   }
 
